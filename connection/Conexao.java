@@ -10,7 +10,7 @@ public class Conexao {
     private static final Logger logger = Logger.getLogger(Conexao.class.getName());
     
     // Configurações de conexão (idealmente viriam de um arquivo de configuração)
-    private static final String URL = "jdbc:postgresql://localhost:5433/spotifei";
+    private static final String URL = "jdbc:postgresql://localhost:5432/spotifei";
     private static final String USUARIO = "postgres";
     private static final String SENHA = "david";
     

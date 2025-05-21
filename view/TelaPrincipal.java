@@ -8,6 +8,7 @@ import view.TelaPlaylist;
 import view.PainelHistorico;
 import view.PainelCurtidas;
 import connection.Conexao;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -17,27 +18,47 @@ public class TelaPrincipal extends javax.swing.JFrame {
     private Usuario usuarioLogado;
 
      public TelaPrincipal(Usuario usuarioLogado) {
-        this.usuarioLogado = usuarioLogado;
-        inicializarComponentes();
-        setTitle("Spotifei - Bem-vindo, " + usuarioLogado.getNome() + "!");
-    }
-     
-     private void inicializarComponentes() {
-        setSize(800, 600);
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
-        setLocationRelativeTo(null);
-        abas.setComponentAt(0, new PainelBuscar());
-        abas.setComponentAt(1, new TelaPlaylist());
-        abas.setComponentAt(2, new PainelHistorico());
-        abas.setComponentAt(3, new PainelCurtidas());
-     }
-     
-    public TelaPrincipal() {
+    this.usuarioLogado = usuarioLogado;
+    initComponents();
+    setLocationRelativeTo(null);
+    setTitle("Spotifei - Bem-vindo, " + usuarioLogado.getNome() + "!");
+    getContentPane().setBackground(Color.BLACK);
+    inicializarComponentes(); // Chame após initComponents()
+}
+     public TelaPrincipal() {
         initComponents();
         setLocationRelativeTo(null);
         setLocationRelativeTo(null);
-getContentPane().setBackground(Color.BLACK);
+        getContentPane().setBackground(Color.BLACK);
+        
+    
+    // Substitui os painéis gerados pela GUI por versões funcionais
+    abas.setComponentAt(0, new PainelBuscar(usuarioLogado));
+    abas.setComponentAt(1, new PainelHistorico(usuarioLogado));            
+    abas.setComponentAt(2, new TelaPlaylist(usuarioLogado));
+    abas.setComponentAt(3, new PainelCurtidas(usuarioLogado));
+    
+    getContentPane().setBackground(Color.BLACK);
+}
+     
+     private void inicializarComponentes() {
+    setSize(800, 600);
+    setDefaultCloseOperation(EXIT_ON_CLOSE);
+    setLocationRelativeTo(null);
+    
+    // Verifique se usuarioLogado não é null
+    if (usuarioLogado == null) {
+        JOptionPane.showMessageDialog(this, 
+            "Nenhum usuário logado. Redirecionando para login...",
+            "Erro", JOptionPane.ERROR_MESSAGE);
+        return;
     }
+ 
+    abas.setComponentAt(0, new PainelBuscar(usuarioLogado));
+    abas.setComponentAt(2, new TelaPlaylist(usuarioLogado));
+    abas.setComponentAt(1, new PainelHistorico(usuarioLogado));
+    abas.setComponentAt(3, new PainelCurtidas(usuarioLogado));
+}
 
     /**
      * This method is called from within the constructor to initialize the form.

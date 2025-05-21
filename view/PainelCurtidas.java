@@ -6,12 +6,14 @@ package view;
 
 import java.awt.Color;
 import javax.swing.ImageIcon;
+import model.Usuario;
 
 /**
  *
  * @author ivald
  */
 public class PainelCurtidas extends javax.swing.JPanel {
+    private Usuario usuarioLogado;
 
     /**
      * Creates new form PainelCurtidas
@@ -25,6 +27,11 @@ public class PainelCurtidas extends javax.swing.JPanel {
 // Colorir os fundos das listas
         listaCurtidas.setBackground(new Color(240, 255, 240)); // Verde claro
         listaDescurtidas.setBackground(new Color(255, 240, 240)); // Vermelho claro
+    }
+    
+    public PainelCurtidas(Usuario usuarioLogado) {
+        initComponents();
+        this.usuarioLogado = usuarioLogado;
     }
 
 
@@ -41,16 +48,14 @@ public class PainelCurtidas extends javax.swing.JPanel {
         lblCurtidas = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         listaCurtidas = new javax.swing.JList<>();
-        jScrollPaneCurtidas = new javax.swing.JScrollPane();
         jPanel2 = new javax.swing.JPanel();
         lblDescurtidas = new javax.swing.JLabel();
-        jScrollPane3 = new javax.swing.JScrollPane();
         jScrollPane4 = new javax.swing.JScrollPane();
         listaDescurtidas = new javax.swing.JList<>();
 
         jPanel1.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
 
-        lblCurtidas.setText("Musícas Curtidas:");
+        lblCurtidas.setText("Músicas Curtidas:");
 
         jScrollPane1.setViewportView(listaCurtidas);
 
@@ -61,12 +66,9 @@ public class PainelCurtidas extends javax.swing.JPanel {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 172, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jScrollPaneCurtidas, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 172, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(lblCurtidas))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(14, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -74,14 +76,12 @@ public class PainelCurtidas extends javax.swing.JPanel {
                 .addContainerGap()
                 .addComponent(lblCurtidas)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPaneCurtidas)
-                    .addComponent(jScrollPane1)))
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 258, Short.MAX_VALUE))
         );
 
         jPanel2.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
 
-        lblDescurtidas.setText("Musícas Descurtidas:");
+        lblDescurtidas.setText("Músicas Descurtidas:");
 
         jScrollPane4.setViewportView(listaDescurtidas);
 
@@ -92,12 +92,9 @@ public class PainelCurtidas extends javax.swing.JPanel {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 172, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 172, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(lblDescurtidas))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(14, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -105,11 +102,8 @@ public class PainelCurtidas extends javax.swing.JPanel {
                 .addContainerGap()
                 .addComponent(lblDescurtidas)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 252, Short.MAX_VALUE)
-                        .addContainerGap())
-                    .addComponent(jScrollPane3)))
+                .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 252, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
@@ -139,10 +133,7 @@ public class PainelCurtidas extends javax.swing.JPanel {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane4;
-    private javax.swing.JScrollPane jScrollPaneCurtidas;
     private javax.swing.JLabel lblCurtidas;
     private javax.swing.JLabel lblDescurtidas;
     private javax.swing.JList<String> listaCurtidas;

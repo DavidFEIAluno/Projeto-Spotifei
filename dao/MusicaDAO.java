@@ -13,6 +13,13 @@ import java.util.List;
 
 public class MusicaDAO {
     
+    private Connection conn;
+
+    public MusicaDAO(Connection conn) {
+        this.conn = conn;
+    }
+
+    
     public boolean inserirMusica(Musica musica) {
         String sql = "INSERT INTO musicas (titulo, artista_id, genero, duracao, data_lancamento) VALUES (?, ?, ?, ?, ?)";
         
@@ -183,45 +190,41 @@ public class MusicaDAO {
         return musicas;
     }
 
-    public List<Musica> listarCurtidasPorUsuario(int usuarioId, boolean acao) {
+    public List<Musica> buscarPorArtista(int artistaId) {
         List<Musica> musicas = new ArrayList<>();
-        String sql = """
-            SELECT m.id, m.titulo, m.genero, m.duracao, m.data_lancamento, 
-                   a.nome AS artista_nome, a.id AS artista_id
-            FROM curtidas c
-            JOIN musicas m ON c.musica_id = m.id
-            JOIN artistas a ON m.artista_id = a.id
-            WHERE c.usuario_id = ? AND c.acao = ?
-            ORDER BY c.data_hora DESC
-            """;
-        
-        try (Connection conn = Conexao.getConexao();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-            
-            stmt.setInt(1, usuarioId);
-            stmt.setBoolean(2, acao);
+        try {
+            Connection conn = Conexao.getConexao();
+            String sql = "SELECT id, titulo FROM musicas WHERE artista_id = ?";
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setInt(1, artistaId);
             ResultSet rs = stmt.executeQuery();
-            
+        
             while (rs.next()) {
-                Musica musica = new Musica();
-                musica.setId(rs.getInt("id"));
-                musica.setTitulo(rs.getString("titulo"));
-                musica.setGenero(rs.getString("genero"));
-                musica.setDuracaoSegundos(rs.getInt("duracao"));
-                
-                Date data = rs.getDate("data_lancamento");
-                if (data != null) {
-                    musica.setDataLancamento(data.toLocalDate());
-                }
-                
-                musica.setArtistaid(rs.getInt("artista_id"));
-                musica.setArtistanome(rs.getString("artista_nome"));
-                
-                musicas.add(musica);
+                Musica m = new Musica();
+                m.setId(rs.getInt("id"));
+                m.setTitulo(rs.getString("titulo"));
+                musicas.add(m);
             }
         } catch (SQLException e) {
-            System.err.println("Erro ao listar músicas curtidas: " + e.getMessage());
+            e.printStackTrace();
         }
         return musicas;
     }
+    
+    public boolean isCurtida(int usuarioId, int musicaId) {
+    String sql = "SELECT acao FROM curtidas WHERE usuario_id = ? AND musica_id = ?";
+    try (Connection conn = Conexao.getConexao();
+         PreparedStatement stmt = conn.prepareStatement(sql)) {
+        stmt.setInt(1, usuarioId);
+        stmt.setInt(2, musicaId);
+        ResultSet rs = stmt.executeQuery();
+        if (rs.next()) {
+            return rs.getBoolean("acao");
+        }
+    } catch (SQLException e) {
+        System.err.println("Erro ao verificar curtida: " + e.getMessage());
+    }
+    return false;
+}
+
 }

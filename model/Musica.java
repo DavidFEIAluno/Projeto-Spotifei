@@ -29,16 +29,16 @@ public class Musica {
         this.ordemNaPlaylist = ordemNaPlaylist;
     }
 
-    public Musica(String titulo, int artistaId, String genero, 
-                 int duracaoSegundos, LocalDate dataLancamento) {
-        this.titulo = titulo;
-        this.artistanome = artistanome;
-        this.genero = genero;
-        this.duracaoSegundos = duracaoSegundos;
-        this.dataLancamento = dataLancamento;
-        this.contadorCurtidas = 0;
-        this.artistaid = artistaid;
-    }
+public Musica(String titulo, int artistaId, String artistaNome, String genero, 
+             int duracaoSegundos, LocalDate dataLancamento) {
+    this.titulo = titulo;
+    this.artistaid = artistaId;
+    this.artistanome = artistaNome;
+    this.genero = genero;
+    this.duracaoSegundos = duracaoSegundos;
+    this.dataLancamento = dataLancamento;
+    this.contadorCurtidas = 0;
+}
 
     // Getters e Setters
     public int getId() { return id; }

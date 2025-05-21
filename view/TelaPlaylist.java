@@ -6,6 +6,7 @@ package view;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
+import model.Usuario;
 
 /**
  *
@@ -13,7 +14,7 @@ import javax.swing.JButton;
  */
 public class TelaPlaylist extends javax.swing.JPanel {
     
-    
+        private Usuario usuarioLogado;
 
     /**
      * Creates new form TelaPlaylist
@@ -21,6 +22,12 @@ public class TelaPlaylist extends javax.swing.JPanel {
     public TelaPlaylist() {
         initComponents();
         
+    }
+    
+    public TelaPlaylist(Usuario usuarioLogado) {
+        initComponents();
+        this.usuarioLogado = usuarioLogado;
+        // Faça o que precisar com o usuarioLogado
     }
     
 public void atualizarListaPlaylists(String[] playlists) {

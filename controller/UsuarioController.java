@@ -6,29 +6,52 @@ package controller;
 
 import model.Usuario;
 import dao.UsuarioDAO;
+import java.util.regex.Pattern;
 
 public class UsuarioController {
-    private UsuarioDAO usuarioDAO;
-
+    private final UsuarioDAO usuarioDAO;
+    
     public UsuarioController() {
-        usuarioDAO = new UsuarioDAO();
+        this.usuarioDAO = new UsuarioDAO();
     }
 
-    public boolean cadastrarUsuario(String nome, String email, String senha) {
-        if (nome.isEmpty() || email.isEmpty() || senha.isEmpty()) {
-            return false;
-        }
-
-        Usuario usuario = new Usuario(nome, email, senha);
-        return usuarioDAO.inserir(usuario);
+   public boolean cadastrarUsuario(String nome, String email, String senha) {
+    // Validações
+    if (nome == null || nome.trim().isEmpty()) {
+        throw new IllegalArgumentException("Nome não pode ser vazio");
     }
+
+    if (email == null || !validarEmail(email)) {
+        throw new IllegalArgumentException("Email inválido");
+    }
+
+    if (senha == null || senha.length() < 6) {
+        throw new IllegalArgumentException("Senha deve ter pelo menos 6 caracteres");
+    }
+
+    Usuario usuario = new Usuario(nome.trim(), email.trim(), senha);
+
+    boolean sucesso = usuarioDAO.cadastrarUsuario(usuario);
+    System.out.println("Cadastro realizado? " + sucesso);
+    return sucesso;
+}
+
 
     public Usuario login(String email, String senha) {
-        if (email.isEmpty() || senha.isEmpty()) {
-            return null;
+        if (email == null || email.trim().isEmpty()) {
+            throw new IllegalArgumentException("Email não pode ser vazio");
+        }
+        
+        if (senha == null || senha.isEmpty()) {
+            throw new IllegalArgumentException("Senha não pode ser vazia");
         }
 
-        return usuarioDAO.buscarPorEmailSenha(email, senha);
+        return usuarioDAO.fazerLogin(email.trim(), senha);
+    }
+
+    private boolean validarEmail(String email) {
+        String regex = "^[A-Za-z0-9+_.-]+@(.+)$";
+        return Pattern.compile(regex).matcher(email).matches();
     }
 }
 

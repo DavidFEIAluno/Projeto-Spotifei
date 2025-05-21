@@ -81,6 +81,11 @@ public class TelaCadastro extends javax.swing.JFrame {
         jLabelNome.setText("Nome:");
 
         campoNomeCadastro.setForeground(new java.awt.Color(0, 255, 0));
+        campoNomeCadastro.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                campoNomeCadastroActionPerformed(evt);
+            }
+        });
 
         btnCadastrar2.setBackground(new java.awt.Color(0, 0, 0));
         btnCadastrar2.setFont(new java.awt.Font("Segoe UI Emoji", 1, 14)); // NOI18N
@@ -168,6 +173,10 @@ public class TelaCadastro extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "Erro ao cadastrar! Verifique os dados.");
         }
     }//GEN-LAST:event_btnCadastrar2ActionPerformed
+
+    private void campoNomeCadastroActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_campoNomeCadastroActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_campoNomeCadastroActionPerformed
 
     /**
      * @param args the command line arguments

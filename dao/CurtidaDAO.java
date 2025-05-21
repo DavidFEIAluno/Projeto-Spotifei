@@ -11,8 +11,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CurtidaDAO {
+    private Connection conn;
+    
+    public CurtidaDAO(Connection conn) {
+        this.conn = conn;
+    }
 
-    public void registrarAcao(int usuarioId, int musicaId, boolean acao) {
+        public boolean registrarAcao(int usuarioId, int musicaId, boolean acao) {
         String sql = """
             INSERT INTO curtidas (usuario_id, musica_id, acao) 
             VALUES (?, ?, ?)
@@ -20,14 +25,21 @@ public class CurtidaDAO {
             DO UPDATE SET acao = EXCLUDED.acao, data_hora = CURRENT_TIMESTAMP
             """;
 
-        try (Connection conn = Conexao.getConexao();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setInt(1, usuarioId);
             stmt.setInt(2, musicaId);
             stmt.setBoolean(3, acao);
-            stmt.executeUpdate();
+            
+            int affectedRows = stmt.executeUpdate();
+            return affectedRows > 0;
         } catch (SQLException e) {
             System.err.println("Erro ao registrar curtida: " + e.getMessage());
+            try {
+                conn.rollback();
+            } catch (SQLException ex) {
+                System.err.println("Erro no rollback: " + ex.getMessage());
+            }
+            return false;
         }
     }
 

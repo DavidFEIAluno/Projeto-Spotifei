@@ -3,23 +3,142 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JPanel.java to edit this template
  */
 package view;
+
+import connection.Conexao;
 import controller.HistoricoController;
+import dao.ArtistaDAO;
 import model.Musica;
+import model.Usuario;
 import javax.swing.*;
-import java.awt.*;
+import javax.swing.table.DefaultTableModel;
+import java.sql.SQLException;
 import java.util.List;
+import java.sql.*;
+import java.time.format.DateTimeFormatter;
+import model.Historico;
 /**
  *
  * @author ivald
  */
-public class PainelHistorico extends javax.swing.JPanel {
 
-    /**
-     * Creates new form PainelHistorico
-     */
-    public PainelHistorico() {
+public class PainelHistorico extends javax.swing.JPanel {
+    private Usuario usuarioLogado;
+    private HistoricoController historicoController;
+    private ArtistaDAO artistaDAO;
+
+ public PainelHistorico(Usuario usuarioLogado) {
+    this.usuarioLogado = usuarioLogado;
+    try {
+        Connection conn = Conexao.getConexao(); // Obtenha a conexão
+        this.historicoController = new HistoricoController();
+        this.artistaDAO = new ArtistaDAO(conn); // Passe a conexão
+        
         initComponents();
+        inicializarComponentesCustomizados();
+        carregarDados();
+    } catch (SQLException e) {
+        JOptionPane.showMessageDialog(null, 
+            "Erro ao conectar ao banco de dados: " + e.getMessage(),
+            "Erro", JOptionPane.ERROR_MESSAGE);
+        throw new RuntimeException("Falha ao inicializar PainelHistorico", e);
     }
+}
+
+    private void inicializarComponentesCustomizados() {
+        // Inicializa a lista se estiver nula (segurança)
+        if (listaUltimasBuscas == null) {
+            listaUltimasBuscas = new JList<>();
+            jScrollPane1.setViewportView(listaUltimasBuscas);
+        }
+        
+        // Inicializa a tabela se estiver nula (segurança)
+        if (tabelaMusicasBuscadas == null) {
+            tabelaMusicasBuscadas = new JTable();
+            jScrollPane2.setViewportView(tabelaMusicasBuscadas);
+        }
+        
+        // Configura modelo da tabela
+        tabelaMusicasBuscadas.setModel(new DefaultTableModel(
+            new Object[][]{},
+            new String[]{"Música", "Artista", "Gênero", "Data"}
+        ));
+    }
+
+    private void carregarDados() {
+        if (usuarioLogado == null || usuarioLogado.getId() <= 0) {
+            JOptionPane.showMessageDialog(this, "Usuário não autenticado", "Erro", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        
+        SwingWorker<Void, Void> worker = new SwingWorker<>() {
+            @Override
+            protected Void doInBackground() throws Exception {
+                carregarUltimasBuscas();
+                carregarMusicasBuscadas();
+                return null;
+            }
+            
+            @Override
+            protected void done() {
+                // Atualiza a interface após carregar
+                repaint();
+                revalidate();
+            }
+        };
+        worker.execute();
+    }
+
+    private void carregarUltimasBuscas() {
+    try {
+        // Agora a lista de historicos é do tipo List<Historico>
+        List<Historico> historicos = historicoController.listarUltimosTermosBuscados(usuarioLogado.getId());
+        SwingUtilities.invokeLater(() -> {
+            DefaultListModel<String> model = new DefaultListModel<>();
+            for (Historico historico : historicos) {
+                // Formatando a data e o termo de busca
+                String entrada = String.format("%s - %s", 
+                    historico.getDataHora().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm")),
+                    historico.getTermoBusca());
+                model.addElement(entrada);
+            }
+            listaUltimasBuscas.setModel(model);
+        });
+    } catch (Exception e) {
+        SwingUtilities.invokeLater(() -> 
+            JOptionPane.showMessageDialog(PainelHistorico.this, 
+                "Erro ao carregar buscas: " + e.getMessage(),
+                "Erro", JOptionPane.ERROR_MESSAGE));
+    }
+}
+
+
+    private void carregarMusicasBuscadas() {
+        try {
+            List<Musica> musicas = historicoController.listarMusicasBuscadasRecentemente(usuarioLogado.getId());
+            DefaultTableModel model = (DefaultTableModel) tabelaMusicasBuscadas.getModel();
+            
+            SwingUtilities.invokeLater(() -> {
+                model.setRowCount(0); // Limpa a tabela
+                
+               for (Musica musica : musicas) {
+        String artista = artistaDAO.buscarPorId(musica.getArtistaid()).getNome();
+        model.addRow(new Object[]{
+            musica.getTitulo(),
+            artista,
+            musica.getGenero(),
+            musica.getDataLancamento()
+        });
+    }
+});
+        } catch (Exception e) {
+            SwingUtilities.invokeLater(() -> 
+                JOptionPane.showMessageDialog(PainelHistorico.this, 
+                    "Erro ao carregar músicas: " + e.getMessage(),
+                    "Erro", JOptionPane.ERROR_MESSAGE));
+        }
+    }
+
+
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -37,7 +156,7 @@ public class PainelHistorico extends javax.swing.JPanel {
         jScrollPane1 = new javax.swing.JScrollPane();
         listaUltimasBuscas = new javax.swing.JList<>();
         jScrollPane4 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        tabelaMusicasBuscadas = new javax.swing.JTable();
         jLabelUltimasBuscas = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
 
@@ -70,18 +189,18 @@ public class PainelHistorico extends javax.swing.JPanel {
 
         jSplitPane1.setTopComponent(jScrollPane1);
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        tabelaMusicasBuscadas.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+                {null, null, null},
+                {null, null, null},
+                {null, null, null},
+                {null, null, null}
             },
             new String [] {
-                "Música", "Artista", "Ação", "Data"
+                "Música", "Artista", "Gênero"
             }
         ));
-        jScrollPane4.setViewportView(jTable1);
+        jScrollPane4.setViewportView(tabelaMusicasBuscadas);
 
         jSplitPane1.setRightComponent(jScrollPane4);
 
@@ -118,7 +237,7 @@ public class PainelHistorico extends javax.swing.JPanel {
                 .addComponent(jSplitPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel2)
-                .addContainerGap(159, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -131,8 +250,8 @@ public class PainelHistorico extends javax.swing.JPanel {
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JSplitPane jSplitPane1;
-    private javax.swing.JTable jTable1;
     private javax.swing.JList<String> listaUltimasBuscas;
     private javax.swing.JTable tabelaCurtidas;
+    private javax.swing.JTable tabelaMusicasBuscadas;
     // End of variables declaration//GEN-END:variables
 }

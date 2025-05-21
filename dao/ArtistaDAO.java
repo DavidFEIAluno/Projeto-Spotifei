@@ -16,31 +16,38 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ArtistaDAO {
+    
+    private Connection conn;
+    public ArtistaDAO(Connection conn) {
+        this.conn = conn;
+    }
 
-    public boolean criarArtista(Artista artista) {
-        String sql = "INSERT INTO artistas (nome, genero) VALUES (?, ?)";
-        
-        try (Connection conn = Conexao.getConexao();
-             PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-            
-            stmt.setString(1, artista.getNome());
-            stmt.setString(2, artista.getGenero());
-            
-            int affectedRows = stmt.executeUpdate();
-            
-            if (affectedRows > 0) {
-                try (ResultSet generatedKeys = stmt.getGeneratedKeys()) {
-                    if (generatedKeys.next()) {
-                        artista.setId(generatedKeys.getInt(1));
-                        return true;
-                    }
+
+   public int inserirArtista(Artista artista) {
+    String sql = "INSERT INTO artistas (nome, genero) VALUES (?, ?)";
+
+    try (Connection conn = Conexao.getConexao();
+         PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+
+        stmt.setString(1, artista.getNome());
+        stmt.setString(2, artista.getGenero());
+
+        int affectedRows = stmt.executeUpdate();
+
+        if (affectedRows > 0) {
+            try (ResultSet generatedKeys = stmt.getGeneratedKeys()) {
+                if (generatedKeys.next()) {
+                    int idGerado = generatedKeys.getInt(1);
+                    artista.setId(idGerado); // opcional
+                    return idGerado;
                 }
             }
-        } catch (SQLException e) {
-            System.err.println("Erro ao criar artista: " + e.getMessage());
         }
-        return false;
+    } catch (SQLException e) {
+        System.err.println("Erro ao inserir artista: " + e.getMessage());
     }
+    return -1; // -1 indica erro
+}
 
     public Artista buscarPorId(int id) {
         String sql = "SELECT * FROM artistas WHERE id = ?";
@@ -108,6 +115,28 @@ public class ArtistaDAO {
         }
         return artistas;
     }
+    
+    public Artista buscarPorNomeExato(String nome) {
+    String sql = "SELECT * FROM artistas WHERE LOWER(nome) = LOWER(?) LIMIT 1";
+
+    try (Connection conn = Conexao.getConexao();
+         PreparedStatement stmt = conn.prepareStatement(sql)) {
+        
+        stmt.setString(1, nome);
+        ResultSet rs = stmt.executeQuery();
+
+        if (rs.next()) {
+            return new Artista(
+                rs.getInt("id"),
+                rs.getString("nome"),
+                rs.getString("genero")
+            );
+        }
+    } catch (SQLException e) {
+        System.err.println("Erro ao buscar artista por nome exato: " + e.getMessage());
+    }
+    return null;
+}
 
     public List<Artista> buscarPorGenero(String genero) {
         List<Artista> artistas = new ArrayList<>();
