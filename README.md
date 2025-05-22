@@ -65,7 +65,7 @@ Link do Git: https://github.com/DavidFEIAluno/Projeto-Spotifei.git
 
 ### Principais Tabelas
 
-- **usuarios**: armazena nome, id, genero
+- **artistas**: armazena nome, id, genero
 - **usuarios**: armazena nome, email, senha
 - **musicas**: armazena nome, artista e gênero
 - **playlists**: vinculadas a um usuário
