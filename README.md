@@ -169,7 +169,7 @@ CREATE TABLE historico_buscas (
     id SERIAL PRIMARY KEY,
     usuario_id INTEGER REFERENCES usuarios(id),
     termo_busca VARCHAR(100) NOT NULL,
-    data_hora TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    data_hora TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     acao VARCHAR(100)
 );
 
