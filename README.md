@@ -8,8 +8,10 @@ Nome: David Ivaldi Elhain
 RA: 24.124.009-2
 
 Curso: Ciências da Computação
+
 Demonstração (Vídeo)
 https://youtu.be/HvAnRmAbJZU?si=G6FUKNnlaPlo5sQm
+
 ---
 Link do Git: https://github.com/DavidFEIAluno/Projeto-Spotifei.git
 ## Índice
