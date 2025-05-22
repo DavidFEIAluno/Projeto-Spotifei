@@ -22,7 +22,7 @@ import model.Historico;
  *
  * @author ivald
  * Aqui é o painel onde aparece tudo ja feito pelo
- * usuario, a pesquisa e a ação tomada no buscar
+ * usuario, a pesquisa e a ação tomada no buscar, seja curtir ou descurtir.
  */
 
 public class PainelHistorico extends javax.swing.JPanel {
