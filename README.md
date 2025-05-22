@@ -169,6 +169,22 @@ CREATE TABLE historico_buscas (
     acao VARCHAR(100)
 );
 
+Adicione Musicas e Artistas:
+
+INSERT INTO artistas (nome, genero) VALUES
+('The Beatles', 'Rock'),
+('Adele', 'Pop'),
+('Ludwig van Beethoven', 'Clássico'),
+('Eminem', 'Rap'),
+('Anitta', 'Funk');
+
+INSERT INTO musicas (titulo, artista_id, genero, duracao, data_lancamento) VALUES
+('Hey Jude', 1, 'Rock', 431, '1968-08-26'),
+('Rolling in the Deep', 2, 'Pop', 228, '2010-11-29'),
+('Symphony No. 5', 3, 'Clássico', 425, '1808-12-22'),
+('Lose Yourself', 4, 'Rap', 326, '2002-10-28'),
+('Envolver', 5, 'Funk', 203, '2021-11-11');
+
 3. Rodar o Projeto
 Abra no NetBeans
 
